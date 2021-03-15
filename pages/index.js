@@ -1,65 +1,62 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useState, useEffect, useContext } from "react";
+import Navbar from "parts/Navbar";
+import Posts from "parts/Posts";
+import CreatePost from "parts/Posts/CreatePost";
+import axios from "configs/axios";
+import filterData from "utils/filterData";
+import { useRouter } from "next/router";
+import { DataContext } from "store/GlobalState";
 
-export default function Home() {
+const Home = ({ data }) => {
+  const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState(data);
+  const router = useRouter();
+  const { state, dispatch } = useContext(DataContext);
+
+  useEffect(() => {
+    setPosts(data);
+    dispatch({ type: "GET_POSTS", payload: data.data });
+  }, [data]);
+
+  const handleNext = () => {
+    setPage(page === data?.max_page ? data?.max_page : page + 1);
+    filterData({
+      router,
+      page: page === data?.max_page ? data?.max_page : page + 1,
+    });
+  };
+
+  const handlePrevious = () => {
+    setPage(page <= 1 ? 1 : page - 1);
+    filterData({ router, page: page - 1 });
+  };
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <Navbar />
+      <section className="container px-16 mt-8 mb-12">
+        <CreatePost />
+        <div className="w-full bg-gray-800 h-0.5 mb-12"></div>
+        <Posts
+          posts={posts}
+          handleNext={() => handleNext()}
+          handlePrevious={() => handlePrevious()}
+        />
+      </section>
+    </>
+  );
+};
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+export async function getServerSideProps(context) {
+  const page = context.query.page || 1;
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+  const data = await axios.get(`/posts?page=${page}`);
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+  return {
+    props: {
+      data,
+    },
+  };
 }
+
+export default Home;

@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "module": "commonJs",
+    "target": "esnext"
+  },
+  "exlude": ["node_modules"],
+  "include": ["./"]
+}
