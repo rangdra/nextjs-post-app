@@ -26,7 +26,7 @@ const Sidebar = ({ data }) => {
           <img
             src={data?.avatar ?? "avatar"}
             alt={data?.username ?? "avatar"}
-            className=" rounded-full"
+            className="w-full h-full rounded-full"
           />
         </figure>
         <h3 className="text-2xl text-indigo-300 mt-4 text-center">

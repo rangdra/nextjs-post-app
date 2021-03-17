@@ -68,6 +68,7 @@ const getPosts = async (req, res) => {
         path: "postedBy",
         select: "-password",
       })
+      .populate("comments.commentBy", "_id avatar fullname")
       .skip((currPage - 1) * perPage)
       .limit(perPage);
 

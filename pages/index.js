@@ -15,7 +15,7 @@ const Home = ({ data }) => {
 
   useEffect(() => {
     setPosts(data);
-    dispatch({ type: "GET_POSTS", payload: data.data });
+    dispatch({ type: "GET_POSTS", payload: data });
   }, [data]);
 
   const handleNext = () => {

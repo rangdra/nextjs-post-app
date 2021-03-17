@@ -3,8 +3,8 @@ import Users from "models/userModel";
 
 const auth = async (req, res) => {
   const token = req.headers.authorization;
-
-  if (!token) return res.status(400).json({ error: "Invalid Authentication." });
+  if (!token)
+    return res.status(400).json({ error: "Invalid Authentication. (token)" });
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   if (!decoded)

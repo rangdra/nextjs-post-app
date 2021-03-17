@@ -8,11 +8,11 @@ import { parseCookies } from "nookies";
 import { toast } from "react-toastify";
 import Router from "next/router";
 import Loading from "components/Loading";
+import Cookies from "js-cookie";
 
 const Settings = ({ profile }) => {
   const [isPassword, setIsPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const { token } = parseCookies();
   const [data, setData] = useState({
     fullname: "",
     username: "",
@@ -44,16 +44,20 @@ const Settings = ({ profile }) => {
     e.preventDefault();
     setIsLoading(true);
     axios
-      .put(`/users/${profile._id}`, data, { headers: { Authorization: token } })
+      .put(`/users/${profile._id}`, data, {
+        headers: { Authorization: Cookies.get("token") },
+      })
       .then((res) => {
         localStorage.setItem("user", JSON.stringify(res?.data));
         setData({ ...data, password: "" });
         toast.success(res?.message);
         setIsLoading(false);
+        setIsPassword(true);
         Router.push("/profile/settings");
       })
       .catch((err) => {
         setIsLoading(false);
+        setIsPassword(true);
         toast.error(err?.response?.data?.message || err?.response?.data?.err);
       });
   };

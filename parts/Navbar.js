@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { parseCookies, destroyCookie } from "nookies";
+import { parseCookies } from "nookies";
+import Cookies from "js-cookie";
 import { CSSTransition } from "react-transition-group";
 import Router from "next/router";
 
@@ -34,7 +35,7 @@ const Navbar = () => {
   }, []);
 
   const logout = () => {
-    destroyCookie(null, "token");
+    Cookies.remove("token", { path: "/" });
 
     localStorage.removeItem("user");
 

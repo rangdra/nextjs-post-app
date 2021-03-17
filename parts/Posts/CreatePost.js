@@ -5,6 +5,7 @@ import Router from "next/router";
 import { toast } from "react-toastify";
 import { ButtonSquare } from "components/Button";
 import { DataContext } from "store/GlobalState";
+import Cookies from "js-cookie";
 
 const CreatePost = () => {
   const { token } = parseCookies();
@@ -17,7 +18,7 @@ const CreatePost = () => {
   const { currentEdit } = state;
 
   const post = currentEdit
-    ? state.posts.find((p) => p._id === currentEdit)
+    ? state.posts.data.find((p) => p._id === currentEdit)
     : null;
 
   const handleChange = (e) => {
@@ -38,7 +39,9 @@ const CreatePost = () => {
     if (currentEdit === 0) {
       // create
       axios
-        .post("/posts", data, { headers: { Authorization: token } })
+        .post("/posts", data, {
+          headers: { Authorization: Cookies.get("token") },
+        })
         .then((res) => {
           setData({ ...data, body: "", tags: "" });
           toast.success(`🤩 ${res?.message}`);
@@ -52,7 +55,7 @@ const CreatePost = () => {
       // update
       axios
         .put(`/posts/${currentEdit}`, data, {
-          headers: { Authorization: token },
+          headers: { Authorization: Cookies.get("token") },
         })
         .then((res) => {
           setData({ ...data, body: "", tags: "" });

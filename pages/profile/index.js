@@ -1,16 +1,17 @@
 import axios from "configs/axios";
 import Router from "next/router";
-import { parseCookies } from "nookies";
 import Post from "parts/Posts/Post";
 import Sidebar from "parts/Sidebar";
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { parseCookies } from "nookies";
 
 const Profile = ({ data, profile }) => {
-  console.log(`data`, data);
-  const { token } = parseCookies();
   const deletePost = (id) => {
     axios
-      .delete(`/posts/${id}`, { headers: { Authorization: token } })
+      .delete(`/posts/${id}`, {
+        headers: { Authorization: Cookies.get("token") },
+      })
       .then((res) => {
         Router.push("/profile");
       });
@@ -26,9 +27,13 @@ const Profile = ({ data, profile }) => {
         </Link>
         <h1 className="text-3xl font-semibold text-gray-800">MyPosts</h1>
         <div className="grid grid-cols-2 gap-4 mt-8">
-          {data?.map((post) => (
-            <Post item={post} onClick={() => deletePost(post._id)} />
-          ))}
+          {data.length > 0 ? (
+            data?.map((post) => (
+              <Post item={post} onClick={() => deletePost(post._id)} />
+            ))
+          ) : (
+            <p>User not have post</p>
+          )}
         </div>
       </section>
     </div>

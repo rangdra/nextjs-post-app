@@ -1,21 +1,21 @@
-import { GET_POSTS, GET_USER_LOGIN, SET_CURRENT_ID } from "./Actions";
+import { SET_CURRENT_ID, GET_POSTS, SET_COMMENT } from "./Actions";
 
 const reducers = (state, action) => {
   switch (action.type) {
+    case SET_CURRENT_ID:
+      return {
+        ...state,
+        currentEdit: action.payload,
+      };
     case GET_POSTS:
       return {
         ...state,
         posts: action.payload,
       };
-    case GET_USER_LOGIN:
+    case SET_COMMENT:
       return {
         ...state,
-        userLogin: action.payload,
-      };
-    case SET_CURRENT_ID:
-      return {
-        ...state,
-        currentEdit: action.payload,
+        textComment: action.payload,
       };
 
     default:

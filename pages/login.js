@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import axios from "configs/axios";
 import { useRouter } from "next/router";
-import { setCookie, parseCookies } from "nookies";
+import { parseCookies } from "nookies";
 import { ButtonForm } from "components/Button";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const router = useRouter();
@@ -23,10 +24,7 @@ const Login = () => {
     axios
       .post("/auth/login", data)
       .then((res) => {
-        setCookie(null, "token", res?.token, {
-          maxAge: 7 * 24 * 60 * 60,
-          path: "/",
-        });
+        Cookies.set("token", res?.token, { expires: 7, path: "/" });
         localStorage.setItem("user", JSON.stringify(res?.user));
 
         router.push("/");

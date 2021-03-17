@@ -25,10 +25,12 @@ const getPost = async (req, res) => {
   try {
     const { id } = req.query;
 
-    const post = await Posts.findById(id).populate({
-      path: "postedBy",
-      select: "-password",
-    });
+    const post = await Posts.findById(id)
+      .populate({
+        path: "postedBy",
+        select: "-password",
+      })
+      .populate("comments.commentBy", "_id fullname avatar");
 
     return res.json({
       status: "success",
